@@ -1,13 +1,16 @@
 #================================== display_cv =================================
-"""
+"""!
 @brief: Display-related utility functions built on opencv (cv2) libraries.
         
 
 """
 #================================= display_cv ==================================
-        @Author: Yiye Chen                  yychen2019@gatech.edu
-        @Date: 10/07/2021[created, Surveillance repository]
-               10/19/2021[moved to the camera repository]
+"""
+@Author: Yiye Chen                  yychen2019@gatech.edu
+@Date: 2021/10/07       [created, Surveillance repository]
+       2021/10/19       [moved to the camera repository]
+       2023/12/14       [moved to ivapy repository]
+"""
 #================================= display_cv ==================================
 
 from typing import Callable, List
@@ -34,15 +37,15 @@ class plotfig:
 #-------------------------------------------------------------------------
 
 
-#=============================== wait_cv ===============================
+#=============================== wait ===============================
 
-def wait_cv(dur=0):
+def wait(dur=0):
   opKey = cv2.waitKey(dur)
   return opKey
 
-#=============================== depth_cv ==============================
+#=============================== depth ==============================
 #
-def depth_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
+def depth(depIm, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
 
     '''!
     @brief  Display depth image using OpenCV window.
@@ -51,7 +54,7 @@ def depth_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
     There will be no color bar for the depth
 
     Args:
-        depth (np.ndarray, (H, W)): The depth map
+        depIm (np.ndarray, (H, W)): The depth map
         depth_clip (float in [0, 1]): The depth value clipping percentage. The top and bottom extreme depth value to remove. Default to 0.0 (no clipping)
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
@@ -64,11 +67,11 @@ def depth_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
         depth_show = improc.apply(depth)
         depth_color = cv2.applyColorMap(cv2.convertScaleAbs(depth_show, alpha=255./depth_show.max(), beta=0), cv2.COLORMAP_JET)
     else:
-        depth_color = cv2.applyColorMap(cv2.convertScaleAbs(depth, alpha=255./depth.max(), beta=0), cv2.COLORMAP_JET)
+        depth_color = cv2.applyColorMap(cv2.convertScaleAbs(depIm, alpha=255./depth.max(), beta=0), cv2.COLORMAP_JET)
 
     # Rescale if requested.
     if ratio is not None: 
-        H, W = depth.shape[:2]
+        H, W = depIm.shape[:2]
         H_vis = int(ratio * H)
         W_vis = int(ratio * W)
         depth_color = cv2.resize(depth_color, (W_vis, H_vis))
@@ -76,9 +79,9 @@ def depth_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
     # Display colorized depth image.
     cv2.imshow(window_name, depth_color[:,:,::-1])
 
-#================================ rgb_cv ===============================
+#================================ rgb ===============================
 #
-def rgb_cv(rgb, ratio=None, window_name="Image"):
+def rgb(rgb, ratio=None, window_name="Image"):
     '''!
     @brief  Display rgb image using the OpenCV
 
@@ -97,9 +100,9 @@ def rgb_cv(rgb, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, rgb[:,:,::-1])
 
-#================================ bgr_cv ===============================
+#================================ bgr ===============================
 #
-def bgr_cv(bgr, ratio=None, window_name="Image"):
+def bgr(bgr, ratio=None, window_name="Image"):
     '''!
     @brief  Display rgb image using the OpenCV
 
@@ -118,7 +121,7 @@ def bgr_cv(bgr, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, bgr)
 
-def gray_cv(gim, ratio=None, window_name="Image"):
+def gray(gim, ratio=None, window_name="Image"):
 
     '''!
     @brief  Display grayscale image using the OpenCV
@@ -138,9 +141,9 @@ def gray_cv(gim, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, gim)
 
-#============================== binary_cv ==============================
+#============================== binary ==============================
 #
-def binary_cv(bIm, ratio=None, window_name="Binary"):
+def binary(bIm, ratio=None, window_name="Binary"):
     '''!
     @brief  Display binary image using OpenCV display routines.
 
@@ -163,9 +166,9 @@ def binary_cv(bIm, ratio=None, window_name="Binary"):
     else:
         cv2.imshow(window_name, cIm)
 
-#============================ trackpoint_cv ============================
+#============================ trackpoint ============================
 #
-def trackpoint_cv(rgb, p, ratio=None, window_name="Image"):
+def trackpoint(rgb, p, ratio=None, window_name="Image"):
     '''!
     @brief  Display rgb image using the OpenCV
 
@@ -189,9 +192,9 @@ def trackpoint_cv(rgb, p, ratio=None, window_name="Image"):
     cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), (255, 0, 0), cv2.MARKER_CROSS, 10, 2)
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
-#============================ trackpoints_cv ===========================
+#============================ trackpoints ===========================
 #
-def trackpoints_cv(rgb, p, ratio=None, window_name="Image"):
+def trackpoints(rgb, p, ratio=None, window_name="Image"):
     '''!
     @brief  Display rgb image using the OpenCV
 
@@ -219,9 +222,9 @@ def trackpoints_cv(rgb, p, ratio=None, window_name="Image"):
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
 
-#============================ trackpoint_cv ============================
+#============================ trackpoint ============================
 #
-def trackpoint_binary_cv(bIm, p, ratio=None, window_name="Image"):
+def trackpoint_binary(bIm, p, ratio=None, window_name="Image"):
     '''!
     @brief  Display rgb image using the OpenCV
 
@@ -232,9 +235,9 @@ def trackpoint_binary_cv(bIm, p, ratio=None, window_name="Image"):
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
     '''
     cIm = cv2.cvtColor(bIm.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
-    trackpoint_cv(cIm, p, ratio, window_name)
+    trackpoint(cIm, p, ratio, window_name)
 
-def trackpoint_gray_cv(gIm, p, ratio=None, window_name="Image"):
+def trackpoint_gray(gIm, p, ratio=None, window_name="Image"):
 
     '''!
     @brief  Display grayscale image using the OpenCV
@@ -246,17 +249,16 @@ def trackpoint_gray_cv(gIm, p, ratio=None, window_name="Image"):
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
     '''
     cIm = cv2.cvtColor(gIm, cv2.COLOR_GRAY2BGR)
-    trackpoint_cv(cIm, p, ratio, window_name)
+    trackpoint(cIm, p, ratio, window_name)
 
 
 #================== OpenCV Side-by-Side Image Interfaces =================
 #-------------------------------------------------------------------------
 
-#============================== images_cv ==============================
+#============================== images ==============================
 #
-# @note Used to be called display_images_cv but display is redundant.
 #
-def images_cv(images:list, ratio=None, window_name="OpenCV Display"):
+def images(images:list, ratio=None, window_name="OpenCV Display"):
     """
     @brief  Display a set of images horizontally concatenated (side-by-side).
 
@@ -279,9 +281,9 @@ def images_cv(images:list, ratio=None, window_name="OpenCV Display"):
     cv2.imshow(window_name, image_display)
 
 
-#============================= rgb_depth_cv ============================
+#============================= rgb_depth ============================
 #
-def rgb_depth_cv(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
+def rgb_depth(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
 
     """
     @brief  Display rgb and depth images side-by-side using OpenCV.
@@ -310,11 +312,11 @@ def rgb_depth_cv(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Di
     depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_show, alpha=255./depth_show.max(), beta=0), cv2.COLORMAP_JET)
 
     # diplay
-    images_cv((rgb[:,:,::-1], depth_colormap), ratio=ratio, window_name=window_name)
+    images((rgb[:,:,::-1], depth_colormap), ratio=ratio, window_name=window_name)
 
 
 # @todo Should delete this function.
-def display_rgb_dep_cv(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
+def display_rgb_dep(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
 
     """Display the rgb and depth image using the OpenCV
 
@@ -343,10 +345,10 @@ def display_rgb_dep_cv(rgb, depth, depth_clip=0.08, ratio=None, window_name="Ope
     depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_show, alpha=255./depth_show.max(), beta=0), cv2.COLORMAP_JET)
 
     # diplay
-    images_cv((rgb[:,:,::-1], depth_colormap), ratio=ratio, window_name=window_name)
+    images((rgb[:,:,::-1], depth_colormap), ratio=ratio, window_name=window_name)
 
 # @todo Should delete this function.
-def display_dep_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
+def display_dep(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
 
     '''!
     @brief  Display depth image using OpenCV window.
@@ -380,9 +382,9 @@ def display_dep_cv(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Displ
     # Display colorized depth image.
     cv2.imshow(window_name, depth_color[:,:,::-1])
 
-#============================ rgb_binary_cv ============================
+#============================ rgb_binary ============================
 #
-def rgb_binary_cv(cIm, bIm, ratio=None, window_name="Color+Binary"):
+def rgb_binary(cIm, bIm, ratio=None, window_name="Color+Binary"):
     """!
     @brief  Display an RGB and binar image side-by-side using OpenCV API.
 
@@ -397,7 +399,7 @@ def rgb_binary_cv(cIm, bIm, ratio=None, window_name="Color+Binary"):
 
     cBm = cv2.cvtColor(bIm.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
 
-    images_cv((cIm[:,:,::-1], cBm), ratio=ratio, window_name=window_name)
+    images((cIm[:,:,::-1], cBm), ratio=ratio, window_name=window_name)
 
 #=========================== wait_for_confirm ==========================
 #
@@ -436,7 +438,7 @@ def wait_for_confirm(rgb_dep_getter:Callable, color_type="rgb", window_name = "d
     while((rgb is not None) and (dep is not None)):
 
         # visualization 
-        display_rgb_dep_cv(rgb, dep, window_name=window_name, ratio=ratio)
+        display_rgb_dep(rgb, dep, window_name=window_name, ratio=ratio)
 
         # wait for confirm
         opKey = cv2.waitKey(1)
@@ -461,12 +463,12 @@ if __name__ == "__main__":
         ratio=2)
     # visualize
     display_rgb_dep_plt(color, dep, suptitle="The selected sensor info from the  wait_for_confirm example. Use the Matplotlib for display")
-    display_rgb_dep_cv(color, dep, window_name="The selected sensor info from the  wait_for_confirm example. Use the OpenCv for display")
+    display_rgb_dep(color, dep, window_name="The selected sensor info from the  wait_for_confirm example. Use the OpenCv for display")
     
     cv2.waitKey(1)
     plt.show()
     
-#=============================== close_cv ==============================
+#=============================== close ==============================
 #
 # @brief    Close the displayed window.
 #
@@ -476,7 +478,18 @@ def close(window_name):
 #==================== OpenCV Single Window Mouse Input ===================
 #-------------------------------------------------------------------------
 
-def getline_rgb(I, isClosed = False), window_name = "Image":
+def polyline_rgb(I, polyPts, isClosed = False, lineColor = (255,255,255) , 
+                             lineThickness = 2, window_name = "Poly+Image"):
+
+  if (polyPts is not None):
+    Imark = I.copy()
+    cv2.polylines(Imark, [np.transpose(polyPts)], isClosed, lineColor, lineThickness)
+    rgb(Imark, window_name = window_name)
+  else:
+    rgb(I, window_name = window_name)
+
+
+def getline_rgb(I, isClosed = False, window_name = "Image"):
   """!
   @brief    Quick and dirty equivalent implementation to Matlab's getline.
 
@@ -491,57 +504,54 @@ def getline_rgb(I, isClosed = False), window_name = "Image":
   # BUT MODIFIED TO REPRODUCE DESIRED FUNCTIONALITY.
   # REQUIRES SOME ADJUSTMENTS UNTIL I KNOW HOW OpenCV WORKS.
 
-  # function to display the coordinates of of the points clicked on the image
+  # Function to process mouse clicks. 
+  #
   def click_event(event, x, y, flags, params):
   
-      # checking for left mouse clicks
-      if event == cv2.EVENT_LBUTTONDOWN:
+    nonlocal pts
+
+    # Check for left mouse click: adds point.
+    if event == cv2.EVENT_LBUTTONDOWN:
+      if pts is None:
+        pts = np.array( [[x],[y]] )
+      else:
+        pts = np.append( pts, [[x],[y]] , axis=1)
   
-          # displaying the coordinates
-          # on the Shell
-          print(x, ' ', y)
+      polyline_rgb(I, pts, window_name = window_name, isClosed = isClosed)
   
-          # displaying the coordinates
-          # on the image window
-          font = cv2.FONT_HERSHEY_SIMPLEX
-          cv2.putText(I, str(x) + ',' +
-                      str(y), (x,y), font,
-                      1, (255, 0, 0), 2)
-          cv2.imshow(window_name, I)
+    # Checking for right mouse clicks: removes last point.
+    if event==cv2.EVENT_RBUTTONDOWN:
+
+      if pts is not None:
+        pts = pts[:, :-1]
+
+      polyline_rgb(I, pts, window_name = window_name, isClosed = isClosed)
   
-      # checking for right mouse clicks
-      if event==cv2.EVENT_RBUTTONDOWN:
   
-          # displaying the coordinates
-          # on the Shell
-          print(x, ' ', y)
+  # driver function
+  pts   = None
+  print("Entered function")
+  rgb(I, window_name = window_name)
+
+  # setting mouse handler for the image
+  # and calling the click_event() function
+  cv2.setMouseCallback(window_name, click_event)
+
+  # wait for a key to be pressed to exit
+  cv2.waitKey(0)
+
+  # close the window
+  close(window_name)
+
+  # return list of points.
+  if (isClosed):
+    pts = np.append( pts, np.transpose([pts[:,0]]), axis=1 )
+    # Not sure why requires transpose / returns a row vector from column request.
+
+  return pts
+
   
-          # displaying the coordinates
-          # on the image window
-          font = cv2.FONT_HERSHEY_SIMPLEX
-          b = img[y, x, 0]
-          g = img[y, x, 1]
-          r = img[y, x, 2]
-          cv2.putText(img, str(b) + ',' +
-                      str(g) + ',' + str(r),
-                      (x,y), font, 1,
-                      (255, 255, 0), 2)
-          cv2.imshow('image', img)
-  
-    # driver function
-      cv2.imshow(window_name, img)
-  
-      # setting mouse handler for the image
-      # and calling the click_event() function
-      cv2.setMouseCallback('image', click_event)
-  
-      # wait for a key to be pressed to exit
-      cv2.waitKey(0)
-  
-      # close the window
-      close(window_name)
-      cv2.destroyAllWindows()
 
 
 #
-#================================= display_cv ==================================
+#================================= display ==================================
