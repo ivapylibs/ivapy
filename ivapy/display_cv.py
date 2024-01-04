@@ -1,8 +1,9 @@
 #================================== display_cv =================================
 """!
-@brief: Display-related utility functions built on opencv (cv2) libraries.
-        
-
+@addtogroup IVAPy
+@{
+@defgroup   Display_CV Display_CV
+@brief      Display-related utility functions built on opencv (cv2) libraries.
 """
 #================================= display_cv ==================================
 """
@@ -551,6 +552,8 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
 
   
 
-
+"""!
+@}
+"""
 #
 #================================= display ==================================

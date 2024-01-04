@@ -64,6 +64,7 @@ logger = logging.getLogger(__name__)
 #
 class AlgConfig(CfgNode):
   """!
+  @ingroup  IVAPy
   @brief Base class for algorithm configuration.
 
   Modifies the core implementation of CfgNode to support nesting in a different
