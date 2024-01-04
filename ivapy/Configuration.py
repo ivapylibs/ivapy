@@ -155,5 +155,28 @@ def _valid_type(value, allow_cfg_node=False):
     return (type(value) in _VALID_TYPES) or (
         allow_cfg_node and isinstance(value, CfgNode)
     )
+
+#================================ BuildConfig ================================
+#
+class BuildConfig(AlgConfig):
+  """!
+  @brief Base class for algorithm builder configuration.
+
+  Many classes require an AlgConfig instance for specifying parameters and 
+  nested build configurations.  However, some punt a lot of the creation to
+  the external calling space.  In that case, what will be passed is some type
+  of build structure with the necessary contained instances. This class play
+  the role of collecting the necessary ingredients, except for the actual
+  parameter configurations.  These should be passed separately to the class'
+  static builder method.
+  """
+
+  #=============================== __init__ ==============================
+  #
+  def __init__(self, init_dict=None, key_list=None, new_allowed=True):
+
+    super(BuildConfig,self).__init__(init_dict, key_list, new_allowed)
+
+  
 #
 #=============================== Configuration ===============================

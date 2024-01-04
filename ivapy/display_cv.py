@@ -498,11 +498,11 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   @param[in]    isClosed        Return as closed polygon.
   """
 
-  #IAMHERE. CODE COPIED BUT NOT WORKING, NOT FULLY MODIFIED.
-  # OBTAINED ORIGINAL CODE FROM:
+  # Obtained original code from:
+  #
   # https://www.geeksforgeeks.org/displaying-the-coordinates-of-the-points-clicked-on-the-image-using-python-opencv/
-  # BUT MODIFIED TO REPRODUCE DESIRED FUNCTIONALITY.
-  # REQUIRES SOME ADJUSTMENTS UNTIL I KNOW HOW OpenCV WORKS.
+  #
+  # and modified to provide desired functionality.
 
   # Function to process mouse clicks. 
   #
@@ -530,7 +530,6 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   
   # driver function
   pts   = None
-  print("Entered function")
   rgb(I, window_name = window_name)
 
   # setting mouse handler for the image
@@ -544,7 +543,7 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   close(window_name)
 
   # return list of points.
-  if (isClosed):
+  if (pts is not None) and isClosed:
     pts = np.append( pts, np.transpose([pts[:,0]]), axis=1 )
     # Not sure why requires transpose / returns a row vector from column request.
 
