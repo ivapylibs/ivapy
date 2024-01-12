@@ -104,11 +104,11 @@ def rgb(rgb, ratio=None, window_name="Image"):
 #
 def bgr(bgr, ratio=None, window_name="Image"):
     '''!
-    @brief  Display rgb image using the OpenCV
+    @brief  Display bgr image using the OpenCV
 
-    The rgb frame will be resized to a visualization size prior to visualization.
+    The bgr frame will be resized to a visualization size prior to visualization.
     Args:
-        rgb (np.ndarray, (H, W, 3)): The rgb image
+        bgr (np.ndarray, (H, W, 3)): The bgr image
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
     '''
@@ -121,6 +121,7 @@ def bgr(bgr, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, bgr)
 
+#================================== gray =================================
 def gray(gim, ratio=None, window_name="Image"):
 
     '''!
@@ -178,14 +179,14 @@ def trackpoint(rgb, p, ratio=None, window_name="Image"):
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
     '''
-    if ratio is not None:                                   # Resize if requested.
-        H, W = rgb.shape[:2]
+    H, W = rgb.shape[:2]
+    if ratio is None:                                   # Resize if requested.
+        rgb_vis = cv2.resize(rgb, (W, H))
+    else:
         H_vis = int(ratio * H)
         W_vis = int(ratio * W)
         rgb_vis = cv2.resize(rgb, (W_vis, H_vis))
         p = ratio * p
-    else:
-        rgb_vis = rgb
 
     p_vis = np.fix(p)
 
@@ -204,14 +205,14 @@ def trackpoints(rgb, p, ratio=None, window_name="Image"):
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
     '''
-    if ratio is not None:                                   # Resize if requested.
+    if ratio is None:                                   # Resize if requested.
+        rgb_vis = rgb
+    else:
         H, W = rgb.shape[:2]
         H_vis = int(ratio * H)
         W_vis = int(ratio * W)
         rgb_vis = cv2.resize(rgb, (W_vis, H_vis))
         p = ratio * p
-    else:
-        rgb_vis = rgb
 
     p_vis = np.fix(p)
 
@@ -530,7 +531,6 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   
   # driver function
   pts   = None
-  print("Entered function")
   rgb(I, window_name = window_name)
 
   # setting mouse handler for the image
@@ -544,7 +544,7 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   close(window_name)
 
   # return list of points.
-  if (isClosed):
+  if (pts is not None) and isClosed:
     pts = np.append( pts, np.transpose([pts[:,0]]), axis=1 )
     # Not sure why requires transpose / returns a row vector from column request.
 
