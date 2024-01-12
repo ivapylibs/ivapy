@@ -1,8 +1,9 @@
 #================================== display_cv =================================
 """!
-@brief: Display-related utility functions built on opencv (cv2) libraries.
-        
-
+@addtogroup IVAPy
+@{
+@defgroup   Display_CV Display_CV
+@brief      Display-related utility functions built on opencv (cv2) libraries.
 """
 #================================= display_cv ==================================
 """
@@ -499,11 +500,11 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
   @param[in]    isClosed        Return as closed polygon.
   """
 
-  #IAMHERE. CODE COPIED BUT NOT WORKING, NOT FULLY MODIFIED.
-  # OBTAINED ORIGINAL CODE FROM:
+  # Obtained original code from:
+  #
   # https://www.geeksforgeeks.org/displaying-the-coordinates-of-the-points-clicked-on-the-image-using-python-opencv/
-  # BUT MODIFIED TO REPRODUCE DESIRED FUNCTIONALITY.
-  # REQUIRES SOME ADJUSTMENTS UNTIL I KNOW HOW OpenCV WORKS.
+  #
+  # and modified to provide desired functionality.
 
   # Function to process mouse clicks. 
   #
@@ -552,6 +553,8 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
 
   
 
-
+"""!
+@}
+"""
 #
 #================================= display ==================================
