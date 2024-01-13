@@ -1,17 +1,18 @@
 #================================== display_cv =================================
-"""!
-@addtogroup IVAPy
-@{
-@defgroup   Display_CV Display_CV
-@brief      Display-related utility functions built on opencv (cv2) libraries.
-"""
-#================================= display_cv ==================================
-"""
-@Author: Yiye Chen                  yychen2019@gatech.edu
-@Date: 2021/10/07       [created, Surveillance repository]
-       2021/10/19       [moved to the camera repository]
-       2023/12/14       [moved to ivapy repository]
-"""
+## @addtogroup Display_CV
+# @{
+#
+# @package  display_cv
+# @brief    Display helper routines using OpenCV
+#
+# @author   Yiye Chen                   yychen2019@gatech.edu
+# @author   Patricio A. Vela            pvela@gatech.edu
+#
+# @date 2021/10/07       [created, Surveillance repository]
+# @date 2021/10/19       [moved to the camera repository]
+# @date 2023/12/14       [moved to ivapy repository]
+#
+
 #================================= display_cv ==================================
 
 from typing import Callable, List
@@ -456,20 +457,6 @@ def wait_for_confirm(rgb_dep_getter:Callable, color_type="rgb", window_name = "d
 
     return rgb, dep
 
-if __name__ == "__main__":
-    imgSource = lambda : (
-        (np.random.rand(100,100,3) * 255).astype(np.uint8), \
-        np.random.rand(100,100)
-    )
-    color, dep = wait_for_confirm(imgSource, color_type="rgb", instruction="This is just a dummy example. Press the \'c\' key to confirm", \
-        ratio=2)
-    # visualize
-    display_rgb_dep_plt(color, dep, suptitle="The selected sensor info from the  wait_for_confirm example. Use the Matplotlib for display")
-    display_rgb_dep(color, dep, window_name="The selected sensor info from the  wait_for_confirm example. Use the OpenCv for display")
-    
-    cv2.waitKey(1)
-    plt.show()
-    
 #=============================== close ==============================
 #
 # @brief    Close the displayed window.
@@ -551,10 +538,24 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
 
   return pts
 
+## @}
+#
+#================================= display ==================================
   
-
-"""!
-@}
-"""
+# @quitf
+#
+# NOTE: MOST LIKELY DOES NOT WORK. CODE HAS BEEN UPDATED. NEED TO REVISE OR DELETE.
+if __name__ == "__main__":
+    imgSource = lambda : (
+        (np.random.rand(100,100,3) * 255).astype(np.uint8), \
+        np.random.rand(100,100)
+    )
+    color, dep = wait_for_confirm(imgSource, color_type="rgb", instruction="This is just a dummy example. Press the \'c\' key to confirm", \
+        ratio=2)
+    # visualize
+    rgb_depth(color, dep, window_name="The selected sensor info from the  wait_for_confirm example. Use the OpenCv for display")
+    wait(1)
+    #plt.show()
+    
 #
 #================================= display ==================================
