@@ -92,6 +92,7 @@ class PiecewiseLines:
 
 
   def next(self):
+    return np.array([[8],[8]])
     pass
 
 
