@@ -18,8 +18,8 @@ def squareInImage(imSize, rLoc, rad, col):
   """
 
   img = np.matlib.repmat(np.zeros(np.shape(col)), imSize)
-  ii = np.range(rLoc[2]-rad:(rLoc[2]+rad+1))
-  jj = np.range(rLoc[1]-rad:(rLoc[1]+rad+1))
+  ii = np.range((rLoc[2]-rad),(rLoc[2]+rad+1))
+  jj = np.range((rLoc[1]-rad),(rLoc[1]+rad+1))
 
   img[ii,jj,:] = col
 

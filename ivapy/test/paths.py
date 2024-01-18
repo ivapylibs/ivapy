@@ -6,7 +6,7 @@
 #
 
 import numpy as np
-import ivapy.Configuration
+from ivapy.Configuration import AlgConfig
 
 
 class CfgPiecewiseLines(AlgConfig):
@@ -66,7 +66,7 @@ class PiecewiseLines:
             an interface for generating them as a path.
   """
 
-  def __init__(self, params = CfgPiecewiseLines(), waypoints):
+  def __init__(self, params = CfgPiecewiseLines(), waypoints = None):
      """!
      @brief     Construct instance based on parameters and waypoints array.
 
@@ -87,7 +87,7 @@ class PiecewiseLines:
     """!
     @brief  Build the path from the specification.
     """
-    thePath = np.array()
+    thePath = np.array([])
     pass
 
 
