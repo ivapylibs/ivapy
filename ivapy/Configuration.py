@@ -178,6 +178,25 @@ class BuildConfig(AlgConfig):
 
     super(BuildConfig,self).__init__(init_dict, key_list, new_allowed)
 
+
+
+#================================= AlgConfig =================================
+#
+class ROSConfig(AlgConfig):
+  """!
+  @ingroup  IVAPy
+  @brief Base class for ROS-based robot, node, algorithm configuration.
+
+  Modifies the core implementation of CfgNode to support nesting in a different
+  way.  Possibly adds an additional type or two.
+  """
+
+  #=============================== __init__ ==============================
+  #
+  def __init__(self, init_dict=None, key_list=None, new_allowed=True):
+
+    super(ROSConfig,self).__init__(init_dict, key_list, new_allowed)
+
   
 #
 #=============================== Configuration ===============================
