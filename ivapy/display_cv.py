@@ -570,7 +570,8 @@ def getlinemask_rgb(I, window_name = "Image"):
 
   imsize = np.shape(I)
   theMask = np.full(imsize[0:2], 0, dtype=np.uint8)
-  cv2.fillPoly(theMask, [np.transpose(thePolyLine)], 255)
+  if thePolyLine is not None:
+    cv2.fillPoly(theMask, [np.transpose(thePolyLine)], 255)
 
   return theMask.astype(dtype=bool)
 
