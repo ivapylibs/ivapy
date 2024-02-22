@@ -35,21 +35,43 @@ class plotfig:
 #-------------------------------------------------------------------------
 #
 
+
+
+#=============================== close ==============================
+#
+# @brief    Close the displayed window.
+#
+def close(window_name):
+  """!
+  @brief    Close a given window by name.
+
+  @param[in]    window_name     Named window to close.
+  """
+  cv2.destroyWindow(window_name)
+
+#================================== wait =================================
+#
+def wait(dur=0):
+  """!
+  @brief    Wait specified duration (ms) for keypress. Usually forces display refresh.
+
+  Much like Matlab, this wait also serves as a trigger to udpate visuals for OpenCV.
+  Otherwise, processing of main loop will continue and pre-empty graphics refreshes.
+
+  @param[in]    dur     [0 ms] Optional duration in ms of waiting for keypress.
+  """
+  opKey = cv2.waitKey(dur)
+  return opKey
+
+
 #===================== OpenCV Single Image Interfaces ====================
 #-------------------------------------------------------------------------
 
 
-#=============================== wait ===============================
-
-def wait(dur=0):
-  opKey = cv2.waitKey(dur)
-  return opKey
-
-#=============================== depth ==============================
+#================================= depth =================================
 #
 def depth(depIm, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
-
-    '''!
+    """!
     @brief  Display depth image using OpenCV window.
 
     The depth frame will be scaled to have the range 0-255.
@@ -60,7 +82,8 @@ def depth(depIm, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
         depth_clip (float in [0, 1]): The depth value clipping percentage. The top and bottom extreme depth value to remove. Default to 0.0 (no clipping)
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
-    '''
+    """
+
     # Apply depth clipping if requested.
     # Convert depth to cv2 image format: scale to 255, convert to 3-channel
     if depth_clip > 0:
@@ -81,10 +104,10 @@ def depth(depIm, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
     # Display colorized depth image.
     cv2.imshow(window_name, depth_color[:,:,::-1])
 
-#================================ rgb ===============================
+#================================== rgb ==================================
 #
 def rgb(rgb, ratio=None, window_name="Image"):
-    '''!
+    """!
     @brief  Display rgb image using the OpenCV
 
     The rgb frame will be resized to a visualization size prior to visualization.
@@ -92,7 +115,7 @@ def rgb(rgb, ratio=None, window_name="Image"):
         rgb (np.ndarray, (H, W, 3)): The rgb image
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
         window_name (sting, Optional): The window name for display. Defaults to \"OpenCV display\"
-    '''
+    """
     if ratio is not None:                                   # Resize if requested.
         H, W = rgb.shape[:2]
         H_vis = int(ratio * H)
@@ -102,7 +125,7 @@ def rgb(rgb, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, rgb[:,:,::-1])
 
-#================================ bgr ===============================
+#================================== bgr ==================================
 #
 def bgr(bgr, ratio=None, window_name="Image"):
     '''!
@@ -124,6 +147,7 @@ def bgr(bgr, ratio=None, window_name="Image"):
         cv2.imshow(window_name, bgr)
 
 #================================== gray =================================
+#
 def gray(gim, ratio=None, window_name="Image"):
 
     '''!
@@ -144,7 +168,7 @@ def gray(gim, ratio=None, window_name="Image"):
     else:
         cv2.imshow(window_name, gim)
 
-#============================== binary ==============================
+#================================= binary ================================
 #
 def binary(bIm, ratio=None, window_name="Binary"):
     '''!
@@ -169,13 +193,14 @@ def binary(bIm, ratio=None, window_name="Binary"):
     else:
         cv2.imshow(window_name, cIm)
 
-#============================ trackpoint ============================
+#=============================== trackpoint ==============================
 #
 def trackpoint(rgb, p, ratio=None, window_name="Image"):
     '''!
-    @brief  Display rgb image using the OpenCV
+    @brief  Display rgb image with trackpoint overlay. 
 
     The rgb frame will be resized to a visualization size prior to visualization.
+
     Args:
         rgb (np.ndarray, (H, W, 3)): The rgb image
         ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
@@ -195,11 +220,11 @@ def trackpoint(rgb, p, ratio=None, window_name="Image"):
     cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), (255, 0, 0), cv2.MARKER_CROSS, 10, 2)
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
-#============================ trackpoints ===========================
+#============================== trackpoints ==============================
 #
 def trackpoints(rgb, p, ratio=None, window_name="Image"):
     '''!
-    @brief  Display rgb image using the OpenCV
+    @brief  Display rgb image with multiple trackpoints overlaid.
 
     The rgb frame will be resized to a visualization size prior to visualization.
     Args:
@@ -225,11 +250,11 @@ def trackpoints(rgb, p, ratio=None, window_name="Image"):
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
 
-#============================ trackpoint ============================
+#=========================== trackpoint_binary ===========================
 #
 def trackpoint_binary(bIm, p, ratio=None, window_name="Image"):
     '''!
-    @brief  Display rgb image using the OpenCV
+    @brief  Display binary image with trackpoint overlay.
 
     The rgb frame will be resized to a visualization size prior to visualization.
     Args:
@@ -240,10 +265,12 @@ def trackpoint_binary(bIm, p, ratio=None, window_name="Image"):
     cIm = cv2.cvtColor(bIm.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
     trackpoint(cIm, p, ratio, window_name)
 
+#============================ trackpoint_gray ============================
+#
 def trackpoint_gray(gIm, p, ratio=None, window_name="Image"):
 
     '''!
-    @brief  Display grayscale image using the OpenCV
+    @brief  Display grayscale image with trackpoint overlay.
 
     The rgb frame will be resized to a visualization size prior to visualization.
     Args:
@@ -255,14 +282,36 @@ def trackpoint_gray(gIm, p, ratio=None, window_name="Image"):
     trackpoint(cIm, p, ratio, window_name)
 
 
+#============================== polyline_rgb =============================
+#
+def polyline_rgb(I, polyPts, isClosed = False, lineColor = (255,255,255) , 
+                             lineThickness = 2, window_name = "Poly+Image"):
+  """!
+  @brief    Annotate image with sequential line segments from mouse input (open or closed path).
+
+  @param[in]    I
+  @param[in]    polyPts
+  @param[in]    isClosed
+  @param[in]    lineColor
+  @param[in]    lineThickness
+  @param[in]    window_name
+  """
+  if (polyPts is not None):
+    Imark = I.copy()
+    cv2.polylines(Imark, [np.transpose(polyPts)], isClosed, lineColor, lineThickness)
+    rgb(Imark, window_name = window_name)
+  else:
+    rgb(I, window_name = window_name)
+
+
 #================== OpenCV Side-by-Side Image Interfaces =================
 #-------------------------------------------------------------------------
 
-#============================== images ==============================
+#================================= images ================================
 #
 #
 def images(images:list, ratio=None, window_name="OpenCV Display"):
-    """
+    """!
     @brief  Display a set of images horizontally concatenated (side-by-side).
 
     Args:
@@ -284,11 +333,10 @@ def images(images:list, ratio=None, window_name="OpenCV Display"):
     cv2.imshow(window_name, image_display)
 
 
-#============================= rgb_depth ============================
+#=============================== rgb_depth ===============================
 #
 def rgb_depth(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
-
-    """
+    """!
     @brief  Display rgb and depth images side-by-side using OpenCV.
 
     Depth frame will be scaled to range [0,255].
@@ -317,6 +365,28 @@ def rgb_depth(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Displ
     # diplay
     images((rgb[:,:,::-1], depth_colormap), ratio=ratio, window_name=window_name)
 
+#============================ rgb_binary ============================
+#
+def rgb_binary(cIm, bIm, ratio=None, window_name="Color+Binary"):
+    """!
+    @brief  Display an RGB and binar image side-by-side using OpenCV API.
+
+    The images will be resized as indicated by the ratio and concatenated
+    horizontally. The concatenated image is what gets displayed in the window.
+
+    @param[in]  cIm             Color image (RGB).
+    @param[in]  bIm             Binary image (0/1 or logical)
+    @param[in]  ratio           Resizing ratio.
+    @param[in]  window_name     Window name for display.
+    """
+
+    cBm = cv2.cvtColor(bIm.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
+
+    images((cIm[:,:,::-1], cBm), ratio=ratio, window_name=window_name)
+
+
+#============================= To Be Removed =============================
+#- BELOW THIS LINE -------------------------------------------------------
 
 # @todo Should delete this function.
 def display_rgb_dep(rgb, depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"):
@@ -385,97 +455,11 @@ def display_dep(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"
     # Display colorized depth image.
     cv2.imshow(window_name, depth_color[:,:,::-1])
 
-#============================ rgb_binary ============================
-#
-def rgb_binary(cIm, bIm, ratio=None, window_name="Color+Binary"):
-    """!
-    @brief  Display an RGB and binar image side-by-side using OpenCV API.
-
-    The images will be resized as indicated by the ratio and concatenated
-    horizontally. The concatenated image is what gets displayed in the window.
-
-    @param[in]  cIm             Color image (RGB).
-    @param[in]  bIm             Binary image (0/1 or logical)
-    @param[in]  ratio           Resizing ratio.
-    @param[in]  window_name     Window name for display.
-    """
-
-    cBm = cv2.cvtColor(bIm.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
-
-    images((cIm[:,:,::-1], cBm), ratio=ratio, window_name=window_name)
-
-#=========================== wait_for_confirm ==========================
-#
-#
-def wait_for_confirm(rgb_dep_getter:Callable, color_type="rgb", window_name = "display",
-        instruction="Press \'c\' key to select the frames. Press \'q\' to return None", 
-        capture_click = False,
-        ratio=None):
-    """An interface function for letting the user select the desired frame \
-        from the given sensor source. The function will display the color and the depth \
-        information received from the source, and then wait for the user to confirm via keyboard. 
-    
-    NOTE: can't distinguish different keys for now. So only support "press any key to confirm"
-
-    Args:
-        color_dep_getter (Callable): The color and depth source. \
-            Expect to get the sensor information in the np.ndarray format via: \
-                        rgb, depth = color_dep_getter() \
-            When there is no more info, expected to return None
-        color_type (str): The color type. RGB or BGR. Will be used for visualization
-        window_name (str):
-        instruction ([type], optional): The instruction text printed to the user for selection. Defaults to None.
-        ratio (float, Optional): Allow resizing the images before display.  Defaults to None, which means will perform no resizing
-
-    Returns:
-        rgb [np.ndarray]: The rgb image confirmed by the user
-        depth [np.ndarray]: The depth frame confirmed by the user
-    """
-    # get the next stream of data
-    rgb, dep = rgb_dep_getter()
-
-    # Display instruction
-    print(instruction)
-
-    # get started
-    while((rgb is not None) and (dep is not None)):
-
-        # visualization 
-        display_rgb_dep(rgb, dep, window_name=window_name, ratio=ratio)
-
-        # wait for confirm
-        opKey = cv2.waitKey(1)
-        if opKey == ord('c'):
-            break
-        elif opKey == ord('q'):
-            return None, None
-        
-        # if not confirm, then go to the next stream of data
-        rgb, dep = rgb_dep_getter()
-
-    cv2.destroyWindow(window_name)
-
-    return rgb, dep
-
-#=============================== close ==============================
-#
-# @brief    Close the displayed window.
-#
-def close(window_name):
-  cv2.destroyWindow(window_name)
+#-- ABOVE THIS LINE ------------------------------------------------------
+#============================= To Be Removed =============================
 
 #==================== OpenCV Single Window Mouse Input ===================
 #-------------------------------------------------------------------------
-
-def polyline_rgb(I, polyPts, isClosed = False, lineColor = (255,255,255) , 
-                             lineThickness = 2, window_name = "Poly+Image"):
-
-  if (polyPts is not None):
-    Imark = I.copy()
-    cv2.polylines(Imark, [np.transpose(polyPts)], isClosed, lineColor, lineThickness)
-    rgb(Imark, window_name = window_name)
-  else:
-    rgb(I, window_name = window_name)
 
 
 def getline_rgb(I, isClosed = False, window_name = "Image"):
@@ -537,6 +521,88 @@ def getline_rgb(I, isClosed = False, window_name = "Image"):
     # Not sure why requires transpose / returns a row vector from column request.
 
   return pts
+
+
+#============================ getlinemask_rgb ============================
+#
+def getlinemask_rgb(I, window_name = "Image"):
+  """!
+  @brief    Quick and dirty polyline input to mask output. Closed path.
+
+  @param[in]    I               Image to display.
+  @param[in]    window_name     Name of existing window to use.
+  @param[in]    isClosed        Return as closed polygon.
+  """
+
+  thePolyLine = getline_rgb(I, True, window_name)
+
+  imsize = np.shape(I)
+  theMask = np.full(imsize[0:2], 0, dtype=np.uint8)
+  cv2.fillPoly(theMask, [np.transpose(thePolyLine)], 255)
+
+  return theMask.astype(dtype=bool)
+
+
+#-------------------------------------------------------------------------
+#========================== Image Stream Viewing =========================
+#-------------------------------------------------------------------------
+
+#========================= rgbd_wait_for_confirm =========================
+#
+#
+def rgbd_wait_for_confirm(rgb_dep_getter:Callable, color_type="rgb", window_name = "display",
+        instruction = "Press \'c\' key to select the frames. Press \'q\' to return None", 
+        capture_click = False,
+        ratio = None):
+    """!
+    @brief  Get imagery from callable, present to user, and process on user input.
+
+    An interface function for letting the user select the desired frame from the given sensor
+    source. The function will display the color and the depth information received from the
+    source, and then wait for the user to confirm via keyboard. 
+    
+    NOTE: can't distinguish different keys for now. So only support "press any key to confirm"
+
+    @param[in]  color_dep_getter    (Callable): RGBD source. \
+            Expect to get the sensor information in the np.ndarray format via: \
+                        rgb, depth = color_dep_getter() \
+            When there is no more info, expected to return None
+    @param[in]  color_type          (str): Color type. RGB or BGR. 
+    @param[in]  window_name         (str, optional): Window name 
+    @param[in]  instruction         (str, optional): Instruction text printed to user for
+                                    selection. Defaults to None.
+    @param[in]  ratio               (float, optional): Image rescaling before display.  \
+                                    Default is None, no resizing.
+
+    @param[out] rgb                 [np.ndarray]: RGB image confirmed/chosen by user
+    @param[out] depth               [np.ndarray]: Depth image confirmed/chosen by the user
+    """
+    # get the next stream of data
+    rgb, dep = rgb_dep_getter()
+
+    # Display instruction
+    print(instruction)
+
+    # get started
+    while((rgb is not None) and (dep is not None)):
+
+        # visualization 
+        display_rgb_dep(rgb, dep, window_name=window_name, ratio=ratio)
+
+        # wait for confirm
+        opKey = cv2.waitKey(1)
+        if opKey == ord('c'):
+            break
+        elif opKey == ord('q'):
+            return None, None
+        
+        # if not confirm, then go to the next stream of data
+        rgb, dep = rgb_dep_getter()
+
+    cv2.destroyWindow(window_name)
+
+    return rgb, dep
+
 
 ## @}
 #
