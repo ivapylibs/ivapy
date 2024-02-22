@@ -461,7 +461,40 @@ def display_dep(depth, depth_clip=0.08, ratio=None, window_name="OpenCV Display"
 #==================== OpenCV Single Window Mouse Input ===================
 #-------------------------------------------------------------------------
 
+#============================== polyline_rgb =============================
+#
+def polyline_rgb(I, polyPts, isClosed = False, lineColor = (255,255,255) , 
+                             lineThickness = 2, window_name = "Poly+Image"):
 
+  if (polyPts is not None):
+    Imark = I.copy()
+    cv2.polylines(Imark, [np.transpose(polyPts)], isClosed, lineColor, lineThickness)
+    rgb(Imark, window_name = window_name)
+  else:
+    rgb(I, window_name = window_name)
+
+#============================== markers_rgb ==============================
+#
+def markers_rgb(I, thePts, ptColor = (255,255,255) , 
+                           ptMarkType = cv2.MARKER_CROSS,
+                           ptSize = 20, ptThickness = 1, ptLineType = 8, 
+                           window_name = "Marked Image"):
+
+  if thePts is None:
+    rgb(I, window_name = window_name)
+  else:
+    psize = np.shape(thePts)
+
+    Imark = I.copy()
+    for ii in range(0,psize[1]):
+      cv2.drawMarker(Imark, thePts[:,ii], ptColor, ptMarkType , ptSize, \
+                                                   ptThickness, ptLineType)
+
+    rgb(Imark, window_name = window_name)
+
+
+#=============================== getline_rgb =============================
+#
 def getline_rgb(I, isClosed = False, window_name = "Image"):
   """!
   @brief    Quick and dirty equivalent implementation to Matlab's getline.
@@ -531,7 +564,6 @@ def getlinemask_rgb(I, window_name = "Image"):
 
   @param[in]    I               Image to display.
   @param[in]    window_name     Name of existing window to use.
-  @param[in]    isClosed        Return as closed polygon.
   """
 
   thePolyLine = getline_rgb(I, True, window_name)
@@ -603,6 +635,56 @@ def rgbd_wait_for_confirm(rgb_dep_getter:Callable, color_type="rgb", window_name
 
     return rgb, dep
 
+#=============================== getpts_rgb ==============================
+#
+def getpts_rgb(I, window_name = "Image"):
+  """!
+  @brief    Quick and dirty equivalent implementation to Matlab's getpts.
+
+  @param[in]    I               Image to display.
+  @param[in]    window_name     Name of existing window to use.
+  @param[in]    isClosed        Return as closed polygon.
+  """
+
+  # See getline_rgb for code inspiration.
+  #
+  def click_event(event, x, y, flags, params):
+  
+    nonlocal pts
+
+    # Check for left mouse click: adds point.
+    if event == cv2.EVENT_LBUTTONDOWN:
+      if pts is None:
+        pts = np.array( [[x],[y]] )
+      else:
+        pts = np.append( pts, [[x],[y]] , axis=1)
+  
+      markers_rgb(I, pts, window_name = window_name)
+  
+    # Checking for right mouse clicks: removes last point.
+    if event==cv2.EVENT_RBUTTONDOWN:
+
+      if pts is not None:
+        pts = pts[:, :-1]
+
+      markers_rgb(I, pts, window_name = window_name)
+  
+  
+  # driver function
+  pts   = None
+  rgb(I, window_name = window_name)
+
+  # setting mouse handler for the image
+  # and calling the click_event() function
+  cv2.setMouseCallback(window_name, click_event)
+
+  # wait for a key to be pressed to exit
+  cv2.waitKey(0)
+
+  # close the window
+  close(window_name)
+
+  return pts
 
 ## @}
 #

@@ -19,13 +19,28 @@ def squareInImage(imSize, rLoc, rad, col):
   """
 
   img = npml.repmat(np.zeros(np.shape(col)), imSize[0], imSize[1])
-  ii = np.array(range((rLoc[1,0]-rad),(rLoc[1,0]+rad+1)))
-  jj = np.array(range((rLoc[0,0]-rad),(rLoc[0,0]+rad+1)))
 
-  if (len(np.shape(img)) == 2):
-    img[ii,jj] = col
-  else:
-    img[ii,jj,:] = col
+  #print('DDDDDDDDD')
+  #print(rLoc)
+  #print(rLoc - rad)
+  #print(all(rLoc - rad > 0))
+  #print('UUUUUUUUU')
+  #print(rLoc + rad)
+  #print(imSize)
+  #print(rLoc + rad < imSize)
+  #print(all(rLoc + rad < imSize))
+  #print('---------')
+
+  loLimOK = all(rLoc - rad > 0)
+  upLimOK = all(rLoc + rad < imSize)
+
+  if (loLimOK and upLimOK):
+    rLoc = rLoc.astype('int')
+
+    if (len(np.shape(img)) == 2):
+      img[(rLoc[1]-rad):(rLoc[1]+rad+1),(rLoc[0]-rad):(rLoc[0]+rad+1)] = col
+    else:
+      img[ii,jj,:] = col
 
   return img
 

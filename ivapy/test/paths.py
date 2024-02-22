@@ -7,9 +7,10 @@
 
 import numpy as np
 from ivapy.Configuration import AlgConfig
+import scipy.interpolate as curve
 
 
-class CfgPiecewiseLines(AlgConfig):
+class CfgStepLines(AlgConfig):
   """!
   @brief    Configuration specifier for piecewise lines instance.
 
@@ -36,7 +37,7 @@ class CfgPiecewiseLines(AlgConfig):
   def __init__(self, init_dict=None, key_list=None, new_allowed=True):
 
     if (init_dict == None):
-      init_dict = CfgPiecewiseLines.get_default_settings()
+      init_dict = CfgStepLines.get_default_settings()
 
     super().__init__(init_dict, key_list, new_allowed)
 
@@ -60,40 +61,75 @@ class CfgPiecewiseLines(AlgConfig):
 
 
 
-class PiecewiseLines:
+class StepLines:
   """!
   @brief    Given a set of points representing piecewise line segments, provides
-            an interface for generating them as a path.
+            an interface for generating them as a path of discrete points/steps.
+
+  This is perhaps one of the simplest implementations.  Each pair of waypoints defines a
+  segment, each of which is broken up into a set number of smaller segments along the
+  line connecting the waypoints.  There is no notion of time, only a discrete step
+  number.  If the path is defined to be periodic, then the next points after the last
+  point will be the first point of the path. No concern is given to how nice that jump
+  is relative to the path.
   """
 
-  def __init__(self, params = CfgPiecewiseLines(), waypoints = None):
+  def __init__(self, params, waypoints):
      """!
      @brief     Construct instance based on parameters and waypoints array.
 
      @param[in] params      Parameter settings.
      @param[in] waypoints   Array of line segment end-points.
      """
-     self.settings  = params
-     self.points    = waypoints
-     self.isReady   = False
+     
+     if (params is None):
+       params = CfgStepLines()
 
-     self.path  = None
-     self.t     = 0
+     self.settings  = params        # @< Implementation settings.
+     self.points    = waypoints     # @< Set of points seeding the path.
+     self.isReady   = False         # @< Is the instance ready to output steps?
+
+     self.path  = None              # @< The synthesized path steps.
+     self.t     = 0                 # @< Line parameter indicating location along path.
+     self.tMax  = 0
 
      self.build()
      pass
 
+  #================================ build ================================
+  #
   def build(self):
     """!
-    @brief  Build the path from the specification.
+    @brief  Build the path from the specification, presuming it has been given.
     """
-    thePath = np.array([])
-    pass
+    if self.points is None:
+      return
+
+    npts = np.shape(self.points)[1]
+    tIn  = np.array(range(0,npts))
+    tOut = np.array(range(0,(npts-1)*self.settings.numPoints)) / self.settings.numPoints
+
+    pFun = curve.interp1d(tIn, self.points)
+
+    self.path = pFun(tOut)
+    self.t    = 0
+    self.tMax = (npts-1)*self.settings.numPoints-1
+    self.isReady = True
 
 
   def next(self):
-    return np.array([[8],[8]])
-    pass
+    if not self.isReady:
+      return None
+
+    pt     = self.path[:,self.t]
+    self.t = self.t+1
+    if (self.t > self.tMax):
+      if(self.settings.isPeriodic):
+        self.t = 0
+      else:
+        self.t = self.tMax
+
+    return pt
 
 
 ## @}
