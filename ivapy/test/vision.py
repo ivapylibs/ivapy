@@ -32,7 +32,7 @@ def squareInImage(imSize, rLoc, rad, col):
   #print('---------')
 
   loLimOK = all(rLoc - rad > 0)
-  upLimOK = all(rLoc + rad < imSize)
+  upLimOK = all(rLoc + rad < imSize[-1])
 
   if (loLimOK and upLimOK):
     rLoc = rLoc.astype('int')
