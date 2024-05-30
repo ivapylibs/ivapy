@@ -7,7 +7,8 @@ specifications.  This basic class should be overriden whenever used with a
 custom configuration class name given that matches the class implementation
 specified.
 
-Based on yacs package.
+Based on yacs package but with modifications to fit usage.  Usually involves
+extending the type classes possible to store as a configuration parameter.
 
 '''
 #=============================== Configuration ===============================
@@ -27,6 +28,7 @@ import io
 import logging
 import sys
 import os
+import types
 from ast import literal_eval
 
 import yaml
@@ -43,8 +45,11 @@ from yacs.config import CfgNode
 # When _PY2 is False, we assume Python 3 is in use
 _PY2 = sys.version_info.major == 2
 
+def __dummyfunc(t):
+  pass
+
 # CfgNodes can only contain a limited set of valid types
-_VALID_TYPES = {tuple, list, str, int, float, bool, type(None)}
+_VALID_TYPES = {tuple, list, str, int, float, bool, type(None), type(__dummyfunc)}
 # py2 allow for str and unicode
 if _PY2:
     _VALID_TYPES = _VALID_TYPES.union({unicode})  # noqa: F821
@@ -146,16 +151,32 @@ class AlgConfig(CfgNode):
             return yaml.safe_dump(self_as_dict, **kwargs)
     
 
+  def __setattr__(self, name, value):
+    if self.is_frozen():
+      raise AttributeError(
+        "Attempted to set {} to {}, but CfgNode is immutable".format(name, value))
+
+    _assert_with_logging(
+      name not in self.__dict__,
+      "Invalid attempt to modify internal CfgNode state: {}".format(name),
+      )
+    _assert_with_logging(
+      _valid_type(value, allow_cfg_node=True),
+      "Invalid type {} for key {}; valid types = {}".format(
+        type(value), name, _VALID_TYPES
+        ),
+      )
+
+    self[name] = value
 
 def _assert_with_logging(cond, msg):
-    if not cond:
-        logger.debug(msg)
-    assert cond, msg
+  if not cond:
+    logger.debug(msg)
+  assert cond, msg
 
 def _valid_type(value, allow_cfg_node=False):
-    return (type(value) in _VALID_TYPES) or (
-        allow_cfg_node and isinstance(value, CfgNode)
-    )
+  return (type(value) in _VALID_TYPES) \
+         or (allow_cfg_node and isinstance(value, CfgNode))
 
 #================================ BuildConfig ================================
 #
