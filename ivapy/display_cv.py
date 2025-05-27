@@ -195,7 +195,7 @@ def binary(bIm, ratio=None, window_name="Binary"):
 
 #=============================== trackpoint ==============================
 #
-def trackpoint(rgb, p, ratio=None, window_name="Image"):
+def trackpoint(rgb, p, ratio=None, window_name="Image", mcol = (255, 0, 0)):
     '''!
     @brief  Display rgb image with trackpoint overlay. 
 
@@ -217,12 +217,12 @@ def trackpoint(rgb, p, ratio=None, window_name="Image"):
 
     p_vis = np.fix(p)
 
-    cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), (255, 0, 0), cv2.MARKER_CROSS, 10, 2)
+    cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), mcol, cv2.MARKER_CROSS, 10, 2)
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
 #============================== trackpoints ==============================
 #
-def trackpoints(rgb, p, ratio=None, window_name="Image"):
+def trackpoints(rgb, p, ratio=None, window_name="Image", mcol = (255,0,0)):
     '''!
     @brief  Display rgb image with multiple trackpoints overlaid.
 
@@ -245,7 +245,7 @@ def trackpoints(rgb, p, ratio=None, window_name="Image"):
 
     nTPs = np.shape(p_vis)[1]
     for ii in range(nTPs):
-      cv2.drawMarker(rgb_vis, (int(p_vis[0,ii]),int(p_vis[1,ii])), (255, 0, 0), cv2.MARKER_CROSS, 10, 2)
+      cv2.drawMarker(rgb_vis, (int(p_vis[0,ii]),int(p_vis[1,ii])), mcol, cv2.MARKER_CROSS, 10, 2)
     
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
