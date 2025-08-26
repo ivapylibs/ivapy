@@ -220,6 +220,47 @@ def trackpoint(rgb, p, ratio=None, window_name="Image", mcol = (255, 0, 0)):
     cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), mcol, cv2.MARKER_CROSS, 10, 2)
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
 
+#========================== annotate_trackpoint ==========================
+#
+def annotate_trackpoint(rgb, p, mcol = (255, 0, 0), msize = 10, mthick = 2):
+    '''!
+    @brief  Annotate RGB image with trackpoint overlay. 
+
+    The RGB frame will be resized prior to annotation.
+
+    @param[in]  rgb     RGB image
+    @param[in]  ratio   (float, Optional): To resize image. Defaults to no resizing.
+    @param[in]  mcol    Marker color for trackpoint.
+    '''
+    rgb_vis = rgb.copy()
+    p_vis = np.fix(p)
+    cv2.drawMarker(rgb_vis, (int(p_vis[0,0]),int(p_vis[1,0])), \
+                            mcol, cv2.MARKER_CROSS, msize, mthick)
+    return rgb_vis
+
+#========================== annotate_trackpoints =========================
+#
+def annotate_trackpoints(rgb, p, mcol = (255, 0, 0), msize = 10, mthick = 2):
+    '''!
+    @brief  Annotate RGB image with trackpoint overlay. 
+
+    The RGB frame will be resized prior to annotation.
+
+    @param[in]  rgb     RGB image
+    @param[in]  ratio   (float, Optional): To resize image. Defaults to no resizing.
+    @param[in]  mcol    Marker color for trackpoint.
+    '''
+    rgb_vis = rgb.copy()
+    p_vis   = np.fix(p)
+
+    nTPs = np.shape(p_vis)[1]
+    for ii in range(nTPs):
+      cv2.drawMarker(rgb_vis, (int(p_vis[0,ii]),int(p_vis[1,ii])), \
+                              mcol, cv2.MARKER_CROSS, msize, mthick)
+
+    return rgb_vis
+
+
 #============================== trackpoints ==============================
 #
 def trackpoints(rgb, p, ratio=None, window_name="Image", mcol = (255,0,0)):
@@ -248,6 +289,7 @@ def trackpoints(rgb, p, ratio=None, window_name="Image", mcol = (255,0,0)):
       cv2.drawMarker(rgb_vis, (int(p_vis[0,ii]),int(p_vis[1,ii])), mcol, cv2.MARKER_CROSS, 10, 2)
     
     cv2.imshow(window_name, rgb_vis[:,:,::-1])
+
 
 
 #=========================== trackpoint_binary ===========================
