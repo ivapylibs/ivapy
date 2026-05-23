@@ -30,7 +30,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ivapy",
-    version="1.0.1",
+    version="1.1.1",
     description="General purpose modules that are useful.",
     author="IVALab",
     packages=find_packages(),
