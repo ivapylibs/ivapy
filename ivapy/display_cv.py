@@ -20,6 +20,8 @@ from dataclasses import dataclass
 
 import numpy as np
 import cv2
+import select
+import readchar
 
 import improcessor.basic as improcessor
 
@@ -28,6 +30,31 @@ class plotfig:
   num   : any
   axes  : any
 
+YorN  = [ord('y') , ord('n')]
+Qonly = [ord('q')]
+QorC  = [ord('q') , ord('c')]
+
+#
+#-------------------------------------------------------------------------
+#======================== Non-OpenCV Key Interface =======================
+#-------------------------------------------------------------------------
+#
+
+def keyhit():
+    """Returns True if a keypress is waiting in the input buffer, False otherwise."""
+    # Arguments: [inputs to watch], [outputs], [exceptions], timeout (0 = non-blocking)
+    ready, _, _ = select.select([sys.stdin], [], [], 0)
+    return bool(ready)
+
+def getkey():
+    return readchar.readkey()
+
+
+def ordkeys(key):
+    if isinstance(key, list):
+      return [ord(k) for k in key]
+    else:
+      return ord(k)
 
 #
 #-------------------------------------------------------------------------
@@ -49,6 +76,17 @@ def close(window_name):
   """
   cv2.destroyWindow(window_name)
 
+#============================= close_all ============================
+#
+# @brief    Close all displayed windows.
+#
+def close_all():
+  """!
+  @brief    Close all openCV windows.
+  """
+  cv2.destroyAllWindows()
+
+
 #================================== wait =================================
 #
 def wait(dur=0):
@@ -62,6 +100,27 @@ def wait(dur=0):
   """
   opKey = cv2.waitKey(dur)
   return opKey
+
+#=============================== waitForKey ==============================
+#
+def waitForKey(expectKey):
+  """!
+  @brief    Wait specified duration (ms) for keypress. Usually forces display refresh.
+
+  Much like Matlab, this wait also serves as a trigger to udpate visuals for OpenCV.
+  Otherwise, processing of main loop will continue and pre-empty graphics refreshes.
+
+  @param[in]    dur     [0 ms] Optional duration in ms of waiting for keypress.
+  """
+  if not isinstance(expectKey, list):
+    expectKey = [expectKey]
+
+  opKey = cv2.waitKey(1)
+  while opKey not in expectKey:
+    opKey = cv2.waitKey(1)
+
+  return opKey
+
 
 
 #===================== OpenCV Single Image Interfaces ====================
@@ -728,6 +787,7 @@ def getpts_rgb(I, window_name = "Image"):
   close(window_name)
 
   return pts
+
 
 ## @}
 #
