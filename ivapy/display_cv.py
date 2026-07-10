@@ -788,6 +788,58 @@ def getpts_rgb(I, window_name = "Image"):
 
   return pts
 
+#============================= getpts_binary =============================
+#
+def getpts_binary(I, window_name = "Mask"):
+  """!
+  @brief    Quick and dirty equivalent implementation to Matlab's getpts.
+
+  @param[in]    M               Mask to display.
+  @param[in]    window_name     Name of existing window to use.
+  """
+
+  # See getline_rgb for code inspiration.
+  #
+  def click_event(event, x, y, flags, params):
+  
+    nonlocal pts
+    nonlocal I
+
+    # Check for left mouse click: adds point.
+    if event == cv2.EVENT_LBUTTONDOWN:
+      if pts is None:
+        pts = np.array( [[x],[y]] )
+      else:
+        pts = np.append( pts, [[x],[y]] , axis=1)
+  
+      markers_rgb(I, pts, window_name = window_name)
+  
+    # Checking for right mouse clicks: removes last point.
+    if event==cv2.EVENT_RBUTTONDOWN:
+
+      if pts is not None:
+        pts = pts[:, :-1]
+
+      markers_rgb(I, pts, window_name = window_name)
+  
+  I = cv2.cvtColor(M.astype(np.uint8)*255, cv2.COLOR_GRAY2BGR)
+
+  # driver function
+  pts   = None
+  rgb(I, window_name = window_name)
+
+  # setting mouse handler for the image
+  # and calling the click_event() function
+  cv2.setMouseCallback(window_name, click_event)
+
+  # wait for a key to be pressed to exit
+  cv2.waitKey(0)
+
+  # close the window
+  close(window_name)
+
+  return pts
+
 
 ## @}
 #
